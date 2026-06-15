@@ -20,9 +20,21 @@ app.get("/todos", (req, res) => {
 });
 
 app.post("/todos", (req, res) => {
+  const { title } = req.body;
+
+  if (typeof title !== "string") {
+    return res.status(400).json({ error: "title is required" });
+  }
+
+  const trimmedTitle = title.trim();
+
+  if (trimmedTitle.length < 1 || trimmedTitle.length > 80) {
+    return res.status(400).json({ error: "title must be between 1 and 80 characters" });
+  }
+
   const todo = {
     id: todos.length + 1,
-    title: req.body.title,
+    title: trimmedTitle,
     done: false
   };
 
