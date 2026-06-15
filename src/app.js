@@ -64,4 +64,10 @@ app.patch("/todos/:id/toggle", (req, res) => {
   res.json(todo);
 });
 
+app.delete("/todos/:id", (req, res) => {
+  const id = Number(req.params.id);
+  todos = todos.filter((todo) => todo.id !== id);
+  res.status(204).send();
+});
+
 module.exports = { app, resetTodos };
