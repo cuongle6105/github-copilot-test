@@ -16,6 +16,16 @@ function resetTodos() {
 }
 
 app.get("/todos", (req, res) => {
+  const { done } = req.query;
+
+  if (done === "true") {
+    return res.json(todos.filter((todo) => todo.done));
+  }
+
+  if (done === "false") {
+    return res.json(todos.filter((todo) => !todo.done));
+  }
+
   res.json(todos);
 });
 
@@ -40,6 +50,18 @@ app.post("/todos", (req, res) => {
 
   todos.push(todo);
   res.status(201).json(todo);
+});
+
+app.patch("/todos/:id/toggle", (req, res) => {
+  const id = Number(req.params.id);
+  const todo = todos.find((item) => item.id === id);
+
+  if (!todo) {
+    return res.status(404).json({ error: "todo not found" });
+  }
+
+  todo.done = !todo.done;
+  res.json(todo);
 });
 
 module.exports = { app, resetTodos };
