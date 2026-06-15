@@ -1,5 +1,4 @@
 const request = require("supertest");
-const { describe, it, expect, beforeEach } = require("vitest");
 const { app, resetTodos } = require("../src/app");
 
 describe("Todo API", () => {
