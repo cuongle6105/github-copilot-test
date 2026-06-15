@@ -13,6 +13,20 @@ describe("Todo API", () => {
     expect(res.body.length).toBe(2);
   });
 
+  it("filters completed todos with done=true", async () => {
+    const res = await request(app).get("/todos?done=true");
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual([{ id: 2, title: "Write tests", done: true }]);
+  });
+
+  it("filters incomplete todos with done=false", async () => {
+    const res = await request(app).get("/todos?done=false");
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual([{ id: 1, title: "Learn Copilot", done: false }]);
+  });
+
   it("creates a todo with a valid title", async () => {
     const res = await request(app)
       .post("/todos")
@@ -66,5 +80,19 @@ describe("Todo API", () => {
 
     expect(res.status).toBe(400);
     expect(res.body).toEqual({ error: "title must be between 1 and 80 characters" });
+  });
+
+  it("toggles todo done state", async () => {
+    const res = await request(app).patch("/todos/1/toggle");
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ id: 1, title: "Learn Copilot", done: true });
+  });
+
+  it("returns 404 when toggling missing todo", async () => {
+    const res = await request(app).patch("/todos/999/toggle");
+
+    expect(res.status).toBe(404);
+    expect(res.body).toEqual({ error: "todo not found" });
   });
 });
